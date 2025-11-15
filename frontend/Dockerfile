@@ -30,6 +30,9 @@ COPY .env .env
 # Copy application files
 COPY . .
 
+# Ensure public directory exists (even if empty)
+RUN mkdir -p /app/public
+
 # Build the application with environment variables
 RUN npm run build
 
@@ -45,9 +48,12 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy necessary files from builder
-COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+
+# Copy public folder (will work even if empty)
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
 COPY --from=builder /app/.env ./.env
 
 # Set correct permissions
