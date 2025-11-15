@@ -127,6 +127,3 @@ docker compose down
 # Stop services: docker-compose down
 ```
 
-## 📄 License
-
-MIT
