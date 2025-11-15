@@ -40,9 +40,16 @@ The application will be available at:
 cd backend
 npm install
 
-# Configure .env file with your settings
+# Create .env from template
 cp .env.example .env
+
+# IMPORTANT: Update .env for local development
+# Replace 'postgres' and 'redis' hostnames with 'localhost'
+sed -i.bak 's/@postgres:/@localhost:/g' .env
+sed -i.bak 's/REDIS_HOST=redis/REDIS_HOST=localhost/g' .env
+
 # Edit .env and add your Gemini API key
+# Get key from: https://aistudio.google.com/app/apikey
 
 # Start PostgreSQL and Redis (via Docker)
 docker compose up -d postgres redis

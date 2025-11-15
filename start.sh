@@ -22,10 +22,11 @@ if [ ! -f "backend/.env" ]; then
     echo "📝 Creating backend/.env from template..."
     
     cat > backend/.env << 'EOF'
-# Database
+# Docker Configuration
+# Database (use 'postgres' hostname for Docker network)
 DATABASE_URL=postgresql://postgres:postgres@postgres:5432/scraper_db
 
-# Redis
+# Redis (use 'redis' hostname for Docker network)
 REDIS_HOST=redis
 REDIS_PORT=6379
 REDIS_PASSWORD=
