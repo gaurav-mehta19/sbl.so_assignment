@@ -2,6 +2,12 @@
 
 This repository contains both frontend and backend for the Web Scraper AI application - an intelligent tool that scrapes websites and answers questions using AI.
 
+## 🎥 Demo Video
+
+[![Watch Demo Video](https://img.shields.io/badge/▶️_Watch-Demo_Video-red?style=for-the-badge&logo=googledrive)](https://drive.google.com/file/d/1HVnvqGML64P9skXe2PnNG5nyaoKmc88Z/view?usp=sharing)
+
+> **Note:** Click the badge above to watch the full application demo on Google Drive
+
 ## 📦 What's Inside
 
 - **Frontend**: Next.js 16 + React 19 + Tailwind CSS 4 + Zustand

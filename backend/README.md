@@ -1,182 +1,105 @@
-# 🚀 Web Scraper & AI Backend API
+# 🔧 Backend - Web Scraper AI API
 
-Backend service that scrapes websites and answers questions using AI.
+Express.js backend service that scrapes websites and answers questions using Google Gemini AI.
 
 ## ✨ Features
 
-- 🌐 **Web Scraping** - Playwright-based browser automation
-- 🤖 **AI Integration** - Google Gemini API for answering questions
-- ⚡ **Background Jobs** - BullMQ with Redis for async processing
-- 💾 **Database** - PostgreSQL with Drizzle ORM
-- 📦 **TypeScript** - Full type safety
-- 🔒 **Security** - URL validation, input sanitization, private IP blocking
-- 🐳 **Docker** - Full containerization support
+- **🌐 Web Scraping**
+  - Playwright for JavaScript-heavy sites (local development)
+  - Cheerio + Axios for static sites (production/lightweight)
+  - Smart content extraction and cleaning
 
-## 📋 Prerequisites
+- **🤖 AI Integration**
+  - Google Gemini 2.0 Flash for fast question answering
+  - Context-aware responses based on scraped content
+  - Configurable AI models and parameters
 
-**For Docker:**
-- Docker Desktop ([macOS](https://www.docker.com/products/docker-desktop/) | [Windows](https://www.docker.com/products/docker-desktop/) | [Linux](https://docs.docker.com/engine/install/))
-- [Gemini API key](https://makersuite.google.com/app/apikey)
+- **⚡ Background Job Processing**
+  - BullMQ for async task queue management
+  - Redis-based job persistence
+  - Automatic retry on failures
+  - Real-time task status updates
 
-**For Local:**
-- Node.js 18+, PostgreSQL 12+, Redis 6+
-- [Gemini API key](https://makersuite.google.com/app/apikey)
+- **💾 Data Management**
+  - PostgreSQL database with Drizzle ORM
+  - TypeScript schema definitions
+  - Automatic migrations
+  - Task history and tracking
 
-## 🚀 Running Locally
+- **🔒 Security & Validation**
+  - URL validation and sanitization
+  - Private IP address blocking
+  - Content length limits
+  - Input validation with error handling
 
-### Option 1: Docker (Recommended)
+- **🐳 Docker Support**
+  - Multi-stage production builds
+  - Health checks and auto-restart
+  - Optimized for containerized deployment
 
-**Step 1: Prepare Environment**
-```bash
-cd backend
-cp .env.docker .env
+## 📁 Directory Structure
+
+```
+backend/
+├── src/
+│   ├── index.ts                 # Express app entry point
+│   ├── controllers/             # Request handlers
+│   │   └── tasks.controller.ts  # Task CRUD operations
+│   ├── routes/                  # API route definitions
+│   │   └── tasks.route.ts       # Task endpoints
+│   ├── services/                # Business logic
+│   │   ├── scraper.service.ts   # Web scraping (Playwright/Cheerio)
+│   │   └── ai.service.ts        # Gemini AI integration
+│   ├── queue/                   # Background job processing
+│   │   ├── redis.ts             # Redis connection
+│   │   ├── scrapeQueue.ts       # BullMQ queue setup
+│   │   └── scrapeWorker.ts      # Job processor
+│   ├── db/                      # Database layer
+│   │   ├── index.ts             # Drizzle DB connection
+│   │   └── schema.ts            # Database schema (tasks table)
+│   ├── middleware/              # Express middleware
+│   │   └── errorHandler.ts     # Global error handling
+│   └── types/                   # TypeScript definitions
+│       └── index.ts             # Shared types
+├── drizzle/                     # Database migrations
+│   ├── 0000_tidy_preak.sql      # Initial schema
+│   └── meta/                    # Migration metadata
+├── drizzle.config.ts            # Drizzle ORM configuration
+├── Dockerfile                   # Production Docker image
+├── docker-entrypoint.sh         # Startup script (runs migrations)
+├── .dockerignore                # Docker build exclusions
+├── .env.example                 # Environment template
+├── package.json                 # Dependencies & scripts
+├── tsconfig.json                # TypeScript configuration
+└── README.md                    # This file
 ```
 
-**Step 2: Edit `.env` file**
-```bash
-# Open .env and update:
-GEMINI_API_KEY=your_actual_api_key_here
+## 🔑 Key Technologies
+
+- **Runtime**: Node.js 20 with TypeScript
+- **Framework**: Express.js
+- **Database**: PostgreSQL 16 with Drizzle ORM
+- **Cache/Queue**: Redis 7 with BullMQ
+- **AI**: Google Gemini API (@google/generative-ai)
+- **Scraping**: Playwright (dev) / Axios + Cheerio (prod)
+- **Validation**: Zod for schema validation
+
+## 🌐 API Endpoints
+
+### Route Structure
+
+```
+/
+├── /health                      # Health check
+└── /api
+    └── /tasks
+        ├── POST   /             # Create new task
+        ├── GET    /             # List all tasks (with pagination)
+        └── GET    /:id          # Get specific task by ID
 ```
 
-**Step 3: Start Services**
-```bash
-docker-compose up
-```
-
-✅ Done! Server runs at `http://localhost:3001`
-
-**What Docker Does:**
-- Starts PostgreSQL database (port 5432)
-- Starts Redis (port 6379)
-- Runs database migrations automatically
-- Starts backend server (port 3001)
-
-**Useful Docker Commands:**
-```bash
-docker-compose up          # Start all services (foreground)
-docker-compose up -d       # Start in background
-docker-compose down        # Stop all services
-docker-compose logs -f     # View logs
-docker-compose restart     # Restart services
-docker-compose up --build  # Rebuild containers
-docker-compose down -v     # Clean slate (removes data)
-```
-
----
-
-### Option 2: Manual Local Setup
-
-#### Step 1: Install Dependencies
-
-**macOS:**
-```bash
-# Install PostgreSQL
-brew install postgresql@16
-brew services start postgresql@16
-
-# Install Redis
-brew install redis
-brew services start redis
-
-# Verify installations
-psql --version
-redis-cli --version
-```
-
-**Windows:**
-1. Install [PostgreSQL](https://www.postgresql.org/download/windows/)
-2. Install [Redis](https://github.com/microsoftarchive/redis/releases) or [Memurai](https://www.memurai.com/)
-3. Install [Node.js 18+](https://nodejs.org/)
-
-**Linux (Ubuntu/Debian):**
-```bash
-# Install PostgreSQL
-sudo apt update
-sudo apt install postgresql postgresql-contrib
-sudo systemctl start postgresql
-
-# Install Redis
-sudo apt install redis-server
-sudo systemctl start redis-server
-
-# Verify
-psql --version
-redis-cli --version
-```
-
-#### Step 2: Setup Project
-
-```bash
-# Navigate to backend
-cd backend
-
-# Install Node dependencies
-npm install
-
-# Install Playwright browser
-npx playwright install chromium
-
-# Copy environment file
-cp .env.example .env
-```
-
-#### Step 3: Configure Environment
-
-Edit `.env` file with your settings:
-```env
-DATABASE_URL=postgresql://postgres:your_password@localhost:5432/scraper_db
-REDIS_HOST=localhost
-REDIS_PORT=6379
-GEMINI_API_KEY=your_actual_api_key_here
-```
-
-**Note:** You don't need to manually create the database. Just ensure PostgreSQL is running with the correct credentials. Drizzle will automatically create the database and tables when you run the migration command below.
-
-#### Step 4: Initialize Database & Start Server
-
-```bash
-# This will create database, tables, and schema automatically
-npm run db:push
-
-# Start the server
-
-```bash
-# Development (with hot reload)
-npm run dev
-
-# Production
-npm run build
-npm start
-```
-
-✅ Server runs at `http://localhost:3001`
-
-## 🔌 API Routes
-
-Base URL: `http://localhost:3001`
-
-### 1. Health Check
-
-**Endpoint:** `GET /`
-
-**Response:**
-```json
-{
-  "message": "Web Scraper & AI API Server",
-  "status": "running"
-}
-```
-
----
-
-### 2. Create Task
-
-**Endpoint:** `POST /api/tasks`
-
-**Request Headers:**
-```
-Content-Type: application/json
-```
+### **POST** `/api/tasks`
+Create a new scraping task
 
 **Request Body:**
 ```json
@@ -186,97 +109,25 @@ Content-Type: application/json
 }
 ```
 
-**Validation Rules:**
-- `url`: Required, valid HTTP/HTTPS URL, max 2048 chars
-- `question`: Required, max 1000 chars
-- Private IPs (localhost, 192.168.x.x, 10.x.x.x) are blocked
-
-**Success Response (201):**
+**Response:**
 ```json
 {
-  "message": "Task created successfully",
-  "task": {
-    "id": 1,
-    "url": "https://example.com",
-    "question": "What is this website about?",
-    "status": "pending",
-    "createdAt": "2025-11-15T10:30:00.000Z"
-  }
+  "id": 1,
+  "url": "https://example.com",
+  "question": "What is this website about?",
+  "status": "pending",
+  "createdAt": "2025-11-15T10:00:00.000Z"
 }
 ```
 
-**Error Response (400):**
-```json
-{
-  "error": "Invalid URL format"
-}
-```
-
-**cURL Example:**
-```bash
-curl -X POST http://localhost:3001/api/tasks \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://github.com",
-    "question": "What is GitHub used for?"
-  }'
-```
-
----
-
-### 3. Get Task by ID
-
-**Endpoint:** `GET /api/tasks/:id`
-
-**URL Parameters:**
-- `id` (required): Task ID (integer)
-
-**Success Response (200):**
-```json
-{
-  "task": {
-    "id": 1,
-    "url": "https://example.com",
-    "question": "What is this website about?",
-    "status": "completed",
-    "aiAnswer": "This website is about...",
-    "errorMessage": null,
-    "createdAt": "2025-11-15T10:30:00.000Z",
-    "updatedAt": "2025-11-15T10:30:45.000Z",
-    "completedAt": "2025-11-15T10:30:45.000Z"
-  }
-}
-```
-
-**Task Status Values:**
-- `pending` - Task created, waiting in queue
-- `processing` - Currently scraping website and getting AI answer
-- `completed` - Successfully finished
-- `failed` - Error occurred (check `errorMessage`)
-
-**Error Response (404):**
-```json
-{
-  "error": "Task not found"
-}
-```
-
-**cURL Example:**
-```bash
-curl http://localhost:3001/api/tasks/1
-```
-
----
-
-### 4. Get All Tasks
-
-**Endpoint:** `GET /api/tasks`
+### **GET** `/api/tasks`
+List all tasks with pagination
 
 **Query Parameters:**
-- `limit` (optional): Number of tasks to return (default: 50)
-- `offset` (optional): Number of tasks to skip (default: 0)
+- `limit` (optional) - Number of results per page (default: 10)
+- `offset` (optional) - Number of results to skip (default: 0)
 
-**Success Response (200):**
+**Response:**
 ```json
 {
   "tasks": [
@@ -286,130 +137,109 @@ curl http://localhost:3001/api/tasks/1
       "question": "What is this website about?",
       "status": "completed",
       "aiAnswer": "This website is about...",
-      "errorMessage": null,
-      "createdAt": "2025-11-15T10:30:00.000Z",
-      "updatedAt": "2025-11-15T10:30:45.000Z",
-      "completedAt": "2025-11-15T10:30:45.000Z"
+      "createdAt": "2025-11-15T10:00:00.000Z",
+      "completedAt": "2025-11-15T10:00:30.000Z"
     }
   ],
-  "pagination": {
-    "limit": 50,
-    "offset": 0,
-    "total": 1
-  }
+  "total": 1
 }
 ```
 
-**cURL Example:**
+### **GET** `/api/tasks/:id`
+Get specific task details with AI answer
+
+**Response:**
+```json
+{
+  "id": 1,
+  "url": "https://example.com",
+  "question": "What is this website about?",
+  "status": "completed",
+  "scrapedContent": "Full website content...",
+  "aiAnswer": "This website is about...",
+  "createdAt": "2025-11-15T10:00:00.000Z",
+  "updatedAt": "2025-11-15T10:00:30.000Z",
+  "completedAt": "2025-11-15T10:00:30.000Z"
+}
+```
+
+### **GET** `/health`
+Health check endpoint
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "timestamp": "2025-11-15T10:00:00.000Z",
+  "uptime": 3600
+}
+```
+
+## 🚀 Getting Started
+
+See the main [README.md](../README.md) in the root directory for setup instructions.
+
+**Quick Start:**
 ```bash
-# Get first 10 tasks
-curl http://localhost:3001/api/tasks?limit=10
+# Install dependencies
+npm install
 
-# Get next 10 tasks
-curl http://localhost:3001/api/tasks?limit=10&offset=10
+# Setup environment
+cp .env.example .env
+# Edit .env with your configuration
+
+# Run migrations
+npm run db:push
+
+# Start development server
+npm run dev
 ```
 
-## 📁 Project Structure
+## 📝 Environment Variables
 
-```
-backend/
-├── src/
-│   ├── controllers/      # HTTP handlers
-│   ├── services/         # Business logic (scraper, AI)
-│   ├── queue/           # BullMQ setup & worker
-│   ├── db/              # Database & schema
-│   ├── routes/          # API routes
-│   ├── middleware/      # Express middleware
-│   └── index.ts         # Entry point
-├── drizzle/             # Database migrations
-├── .env.example         # Local env template
-├── .env.docker          # Docker env template
-├── docker-compose.yml   # Docker orchestration
-├── Dockerfile           # Container image
-└── package.json
-```
+See `.env.example` for all configuration options including:
+- `DATABASE_URL` - PostgreSQL connection string
+- `REDIS_HOST` / `REDIS_PORT` - Redis connection
+- `GEMINI_API_KEY` - Google AI Studio API key
+- `USE_PLAYWRIGHT` - Toggle between Playwright/Cheerio
+- `MAX_CONTENT_LENGTH` - Content extraction limit
 
-## 🗄️ Database Schema
+## 🔄 How It Works
 
-```sql
-CREATE TABLE tasks (
-  id              SERIAL PRIMARY KEY,
-  url             VARCHAR(2048) NOT NULL,
-  question        TEXT NOT NULL,
-  status          VARCHAR(50) DEFAULT 'pending',
-  scraped_content TEXT,
-  ai_answer       TEXT,
-  error_message   TEXT,
-  created_at      TIMESTAMP DEFAULT NOW(),
-  updated_at      TIMESTAMP DEFAULT NOW(),
-  completed_at    TIMESTAMP
-);
-```
+1. **User submits task** → POST `/api/tasks` with URL and question
+2. **Task created** → Saved to PostgreSQL with status "pending"
+3. **Job queued** → Task added to BullMQ queue for background processing
+4. **Worker processes** → Scrapes website, sends to Gemini AI, saves answer
+5. **User polls** → GET `/api/tasks/:id` to check status and get result
+6. **Complete** → Task status updated to "completed" with AI answer
 
-**Status Flow:** `pending` → `processing` → `completed`/`failed`
+## 📊 Database Schema
 
-## 🔧 Available Scripts
-
-```bash
-npm run dev        # Start dev server (hot reload)
-npm run build      # Build for production
-npm start          # Start production server
-npm run db:push    # Push schema to database
-npm run db:studio  # Open database browser
-```
-
-## 🌐 Environment Variables
-
-```env
-# Server
-PORT=3001
-NODE_ENV=development
-
-# Database
-DATABASE_URL=postgresql://user:pass@localhost:5432/scraper_db
-
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
-
-# AI
-GEMINI_API_KEY=your_key_here
-GEMINI_MODEL=gemini-2.0-flash-exp
-
-# Optional
-MAX_CONTENT_LENGTH=50000
-FRONTEND_URL=http://localhost:3000
-```
+**tasks** table:
+- `id` - Auto-increment primary key
+- `url` - Website URL to scrape
+- `question` - User's question
+- `status` - pending | processing | completed | failed
+- `scrapedContent` - Extracted website text
+- `aiAnswer` - Gemini AI response
+- `errorMessage` - Error details if failed
+- `createdAt` - Timestamp
+- `updatedAt` - Last update timestamp
+- `completedAt` - Completion timestamp
 
 ## 🐛 Troubleshooting
 
-**Port already in use:**
-```bash
-lsof -i :3001  # Check what's using port 3001
-# Kill the process or change PORT in .env
-```
+**Database connection issues:**
+- Ensure PostgreSQL is running
+- Check `DATABASE_URL` in `.env`
+- For local dev, use `localhost` not `postgres`
 
-**Database connection failed:**
-```bash
-# Ensure PostgreSQL is running
-brew services list              # macOS
-sudo systemctl status postgresql # Linux
-```
+**Redis connection errors:**
+- Verify Redis is running
+- Check `REDIS_HOST` in `.env`
+- For local dev, use `localhost` not `redis`
 
-**Redis connection refused:**
-```bash
-brew services start redis       # macOS
-sudo systemctl start redis      # Linux
-```
-
-**Playwright browser not found:**
-```bash
-npx playwright install chromium
-```
-
-**Docker issues:**
-```bash
-# Restart Docker Desktop
-# Or clean slate:
-docker-compose down -v && docker-compose up
-```
+**Scraping failures:**
+- Check if website blocks bots
+- Try enabling Playwright: `USE_PLAYWRIGHT=true`
+- Verify website is accessible
