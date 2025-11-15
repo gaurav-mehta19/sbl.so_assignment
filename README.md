@@ -89,14 +89,8 @@ Frontend (Next.js) ──HTTP──> Backend (Express)
 
 ## 🌐 Live Deployment
 
-- **Frontend**: https://sbl-so-assignment-frontend.vercel.app
-- **Backend**: https://sbl-so-assignment.onrender.com
-
-## 📚 Documentation
-
-- [Docker Setup Guide](./DOCKER.md) - Complete Docker orchestration guide
-- [Backend README](./backend/README.md) - Backend API documentation
-- [Frontend README](./frontend/README.md) - Frontend setup and usage
+- **Frontend**: https://sbl-so-assignment.vercel.app/
+- **Backend**: https://sbl-so-assignment-1.onrender.com
 
 ## 🧪 Testing
 
