@@ -30,8 +30,14 @@ ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
 # Copy application files
 COPY . .
 
+# Make entrypoint executable
+RUN chmod +x docker-entrypoint.sh
+
 # Expose port
 EXPOSE 3001
 
-# Default command (can be overridden in docker-compose)
+# Set entrypoint
+ENTRYPOINT ["./docker-entrypoint.sh"]
+
+# Default command
 CMD ["npm", "run", "dev"]

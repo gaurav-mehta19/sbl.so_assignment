@@ -14,9 +14,15 @@ console.log('🔧 Database Configuration:', {
   url: process.env.DATABASE_URL?.replace(/:[^:@]+@/, ':****@'), // Hide password
 });
 
+// Determine SSL configuration
+// Disable SSL for local Docker (hostname: postgres or localhost)
+// Enable SSL for remote production databases
+const isLocalDocker = process.env.DATABASE_URL?.includes('@postgres:') || 
+                      process.env.DATABASE_URL?.includes('@localhost:');
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: isLocalDocker ? false : { rejectUnauthorized: false },
 });
 
 export const db = drizzle(pool, { schema });
