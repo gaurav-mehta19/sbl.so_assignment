@@ -245,5 +245,3 @@ npm run lint
 - **Mobile**: Single column layout, touch-friendly buttons
 - **Tablet**: 2-column grid for task cards
 - **Desktop**: 3-column grid, optimized spacing
-
-## 📄 License
