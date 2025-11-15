@@ -6,58 +6,58 @@
 export const designSystem = {
   // 🎨 Colors
   colors: {
-    // Primary: Deep Indigo / Electric Blue Gradient
+    // Primary: Primary Blue
     primary: {
-      50: '#eef2ff',
-      100: '#e0e7ff',
-      200: '#c7d2fe',
-      300: '#a5b4fc',
-      400: '#818cf8',
-      500: '#6366f1', // Main
-      600: '#4f46e5',
-      700: '#4338ca',
-      800: '#3730a3',
-      900: '#312e81',
-      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      gradientSubtle: 'linear-gradient(135deg, #667eea15 0%, #764ba215 100%)',
+      50: '#e6f1ff',
+      100: '#cce3ff',
+      200: '#99c7ff',
+      300: '#66abff',
+      400: '#338fff',
+      500: '#1F6FEB', // Main - Primary Blue
+      600: '#1a5ec4',
+      700: '#154d9d',
+      800: '#103c76',
+      900: '#0b2b4f',
+      gradient: 'linear-gradient(135deg, #1F6FEB 0%, #154d9d 100%)',
+      gradientSubtle: 'linear-gradient(135deg, #1F6FEB15 0%, #154d9d15 100%)',
     },
     
-    // Secondary: Slate/Neutral
+    // Secondary: Neutral/Background
     neutral: {
-      50: '#f8fafc',
-      100: '#f1f5f9',
-      200: '#e2e8f0',
+      50: '#FFFFFF',      // Card White
+      100: '#F5F7FA',     // Background Light Gray
+      200: '#e5e9ef',
       300: '#cbd5e1',
       400: '#94a3b8',
       500: '#64748b',
       600: '#475569',
       700: '#334155',
       800: '#1e293b',
-      900: '#0f172a',
+      900: '#1A1A1A',     // Primary Dark Text
     },
     
     // Status Colors
     status: {
       pending: {
-        bg: '#fef3c7',
-        text: '#92400e',
-        border: '#fde047',
-        darkBg: '#78350f20',
-        darkText: '#fcd34d',
+        bg: '#fff9e6',
+        text: '#8a6d00',
+        border: '#FFD43B',     // Accent Yellow
+        darkBg: '#8a6d0020',
+        darkText: '#FFD43B',
       },
       processing: {
-        bg: '#dbeafe',
-        text: '#1e40af',
-        border: '#60a5fa',
-        darkBg: '#1e40af20',
-        darkText: '#60a5fa',
+        bg: '#e6f1ff',
+        text: '#1a5ec4',
+        border: '#1F6FEB',     // Primary Blue
+        darkBg: '#1a5ec420',
+        darkText: '#1F6FEB',
       },
       completed: {
-        bg: '#d1fae5',
-        text: '#065f46',
-        border: '#34d399',
-        darkBg: '#065f4620',
-        darkText: '#34d399',
+        bg: '#e8f5e9',
+        text: '#2e7d32',
+        border: '#4CAF50',     // Positive Green
+        darkBg: '#2e7d3220',
+        darkText: '#4CAF50',
       },
       failed: {
         bg: '#fee2e2',
@@ -69,10 +69,10 @@ export const designSystem = {
     },
     
     // Semantic
-    success: '#10b981',
+    success: '#4CAF50',    // Positive Green
     error: '#ef4444',
-    warning: '#f59e0b',
-    info: '#3b82f6',
+    warning: '#FFD43B',    // Accent Yellow
+    info: '#1F6FEB',       // Primary Blue
   },
   
   // 📝 Typography

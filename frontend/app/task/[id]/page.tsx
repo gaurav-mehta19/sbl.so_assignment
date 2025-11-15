@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +9,7 @@ import { Loader } from '@/components/loader';
 import { taskService } from '@/lib/api';
 import Link from 'next/link';
 import { ArrowLeft, Copy, CheckCircle2 } from 'lucide-react';
-import { useState } from 'react';
+import { useCurrentTask } from '@/lib/store';
 
 // Simple markdown parser for AI answers
 function parseMarkdown(text: string) {
@@ -91,8 +91,9 @@ export default function TaskDetailPage() {
   const params = useParams();
   const taskId = Number(params.id);
   const [copied, setCopied] = useState(false);
+  const { task, setTask, isLoading, setIsLoading, error, setError } = useCurrentTask();
 
-  const { data: task, isLoading, isError, error, refetch } = useQuery({
+  const { data, isLoading: queryLoading, isError, error: queryError, refetch } = useQuery({
     queryKey: ['task', taskId],
     queryFn: () => taskService.getTask(taskId),
     refetchInterval: (query) => {
@@ -104,6 +105,24 @@ export default function TaskDetailPage() {
     },
     retry: false,
   });
+
+  useEffect(() => {
+    setIsLoading(queryLoading);
+  }, [queryLoading, setIsLoading]);
+
+  useEffect(() => {
+    if (data) {
+      setTask(data);
+    }
+  }, [data, setTask]);
+
+  useEffect(() => {
+    if (isError && queryError) {
+      setError(queryError instanceof Error ? queryError.message : 'Failed to load task');
+    } else {
+      setError(null);
+    }
+  }, [isError, queryError, setError]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -125,7 +144,7 @@ export default function TaskDetailPage() {
     return <FullPageLoader />;
   }
 
-  if (isError || !task) {
+  if (error || !task) {
     return (
       <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
         <nav className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
@@ -148,9 +167,7 @@ export default function TaskDetailPage() {
             </CardHeader>
             <CardContent className="text-sm text-red-800 dark:text-red-300">
               <p className="mb-4">
-                {error instanceof Error
-                  ? error.message
-                  : 'Failed to load task details'}
+                {error || 'Failed to load task details'}
               </p>
               <Link href="/">
                 <Button variant="outline">Create New Task</Button>
@@ -209,29 +226,6 @@ export default function TaskDetailPage() {
               <CardTitle className="text-lg">Task Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Task ID
-                </label>
-                <div className="flex items-center gap-2">
-                  <code className="flex-1 rounded bg-slate-100 p-2 font-mono text-sm text-slate-900 dark:bg-slate-800 dark:text-slate-100">
-                    {task.id}
-                  </code>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => copyToClipboard(String(task.id))}
-                    className="shrink-0"
-                  >
-                    {copied ? (
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                   Website URL
